@@ -47,6 +47,34 @@ reconnect the Teensy or reboot if routing behaves unexpectedly. This launcher
 is intended for the M8 and the internal output; it does not select or manage
 an additional USB DAC.
 
+## Optional boot launch
+
+On the tested NextUI version, install the hook after installing the M8 tool:
+
+1. Create `.userdata/tg5040/.hooks/boot.d/` on the SD card if needed.
+2. Create `.userdata/tg5040/.m8-autostart-path` containing the absolute path
+   of the installed M8 `.pak` directory on a single line. The path must be
+   under `/mnt/SDCARD/Tools/tg5040/`.
+3. Copy `m8-autostart.sync.sh` from this repository into that `boot.d`
+   directory and make it executable on the device.
+4. Restart with the Teensy connected. Set the volume low before connecting
+   headphones.
+
+The hook waits up to 20 seconds for M8 USB audio and a `/dev/ttyACM*` serial
+device, then waits another two seconds for NextUI's audio monitor and starts
+the installed M8 tool before NextUI's menu. The client itself identifies the
+M8 serial device; the hook's serial check alone does not identify it. Exiting
+M8 returns to the menu. If the required devices or launcher are missing, boot
+continues to the menu. The hook appends to
+`.userdata/tg5040/logs/m8-autostart.txt`; the M8 launcher has its own log.
+
+On the tested setup, automatic launch, audio playback, returning to NextUI
+with Select + Y, and booting to NextUI with the Teensy disconnected were
+verified.
+
+To disable boot launch, rename the hook so it no longer ends in `.sh`, or
+remove that hook file. It does not configure USB headphone adapters.
+
 ## Source and building
 
 `m8c-source/` contains the modified m8c source used for the installed client.
