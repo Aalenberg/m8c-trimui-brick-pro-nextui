@@ -87,13 +87,13 @@ but NextUI restored its volume to 80%; always lower it before listening.
 Disconnecting the adapter during playback stopped the client and returned
 to NextUI in the test.
 
-## Review package installation
+## Installation
 
-The review ZIP is intended for a Brick Pro running NextUI, with M8 Headless
+Download the installation ZIP from [Releases](../../releases/latest). It is
+intended for a Brick Pro running NextUI, with M8 Headless
 already installed separately on a Teensy. On the tested Brick, a fresh package
 installation, automatic boot launch, LEDs off, controls and audio were
 verified. Restoration was tested against an isolated fixture on the Brick.
-The ZIP is not a published release.
 
 Check that `Tools/tg5040/M8C Install.pak` does not already exist before
 extracting the ZIP to the SD card root. Do not overwrite an existing folder.
@@ -197,11 +197,11 @@ Run the installer, package-builder and USB output selection tests with:
 python3 -m unittest discover -s tests -v
 ```
 
-The review ZIP can be assembled with Python 3.9 or later and the separately
+The installation ZIP can be assembled with Python 3.9 or later and the separately
 staged, hash-verified runtime files:
 
 ```sh
-python3 tools/build-package.py --runtime /path/to/m8-runtime --output /path/to/M8C-review.zip
+python3 tools/build-package.py --runtime /path/to/m8-runtime --output /path/to/M8C-NextUI.zip
 ```
 
 The builder checks the runtime binaries and serial-library source archives

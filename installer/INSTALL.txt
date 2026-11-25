@@ -1,6 +1,6 @@
 M8C for NextUI Brick Pro
 
-This review package targets Brick Pro with NextUI; M8 Headless firmware must
+This package targets Brick Pro with NextUI; M8 Headless firmware must
 already be installed on a separate Teensy. Do not use it on the stock OS.
 
 Before extracting the ZIP to the root of the SD card, check that
