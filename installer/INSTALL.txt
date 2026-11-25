@@ -1,0 +1,40 @@
+M8C for NextUI Brick Pro
+
+This review package targets Brick Pro with NextUI; M8 Headless firmware must
+already be installed on a separate Teensy. Do not use it on the stock OS.
+
+Before extracting the ZIP to the root of the SD card, check that
+Tools/tg5040/M8C Install.pak does not already exist. Do not overwrite an
+existing folder. Safely eject the card, boot NextUI, then run Tools > M8C Install.
+The installer installs M8C.pak, enables boot autostart, and saves all five
+LED brightness and info-brightness values as zero. Reboot to apply the LEDs.
+This also disables LED-based battery and sleep indications. Early boot lights
+may still appear before the hook runs.
+The installer refuses existing M8C.pak, hooks, autostart path, or installer
+state; it never upgrades or replaces an existing M8 installation. In
+particular, an existing M8 autostart or LED-off hook must be resolved manually
+before installation; back up existing files and do not overwrite them.
+
+Keep headphones off your ears and lower the volume before connecting audio
+devices, rebooting, or waking the Brick. NextUI can change USB volume or card
+order. Connect the USB adapter before the Teensy for the tested USB setup;
+otherwise the launcher may select the Brick's internal output.
+
+If LED settings do not yet exist, install NextUI's LedControl tool first so
+its Brick Pro template is available. If settings have an unexpected format,
+installation stops without activating anything.
+
+To undo the hooks and LED settings, with LedControl closed, run on the device:
+
+  sh "/mnt/SDCARD/Tools/tg5040/M8C Install.pak/launch.sh" restore
+
+Restore refuses to overwrite changes made after installation. In that case,
+compare the current files with the copies in
+.userdata/tg5040/.m8-installer-state/ and resolve them manually. The original
+LED settings, if present, remain in that directory as led-backup. Restore
+retains the installed M8C.pak and installer state to protect user data. After
+checking them, remove them manually if desired. Reboot to apply restored LEDs.
+Installer messages are appended to M8C Install.pak/log.txt.
+
+If installation is interrupted, run restore as above; if preparation failed
+before state was complete, inspect the log and retained state manually.

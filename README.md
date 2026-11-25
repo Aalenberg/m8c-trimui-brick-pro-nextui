@@ -1,4 +1,4 @@
-# m8c for TrimUI Brick Pro / NextUI
+# M8C for TrimUI Brick Pro / NextUI
 
 An ARM64 port of [m8c](https://github.com/laamaa/m8c) for using a
 Teensy 4.1 running M8 Headless with a TrimUI Brick Pro running
@@ -8,7 +8,7 @@ Teensy 4.1 running M8 Headless with a TrimUI Brick Pro running
 This repository contains the client and NextUI launcher, **not** the M8
 Headless firmware.
 
-![M8 Headless running on a TrimUI Brick Pro](images/m8-on-brick-pro.jpg)
+<img src="images/m8-on-brick-pro.jpg" alt="M8 Headless running on a TrimUI Brick Pro" width="461">
 
 ## Tested setup
 
@@ -37,8 +37,15 @@ joystick buttons, including Brick Pro-specific Play and exit mappings.
 
 ## Audio
 
-The installed m8c configuration disables its own capture; the launcher uses ALSA
-`arecord` and `aplay` to route 44.1 kHz stereo USB audio from the M8. When
+The Teensy sends its M8 audio over USB to the Brick. The Brick's built-in
+headphone jack produced noise and clicks, including when the Teensy was
+disconnected; the cause has not been determined. For cleaner listening, the
+tested setup uses a USB hub to connect both the Teensy and a USB headphone
+adapter to the Brick. Audio then travels from the Teensy over USB to the Brick
+and back over USB to the adapter, bypassing the Brick's headphone output.
+
+M8C's own capture is disabled; the launcher uses ALSA `arecord` and `aplay`
+to route 44.1 kHz stereo USB audio from the M8. When
 NextUI has selected USB audio and its first non-internal card is a USB playback
 device other than the M8, with a `PCM` mixer control and playback device 0,
 the launcher uses that card for output. Otherwise it uses the Brick's
@@ -80,7 +87,33 @@ but NextUI restored its volume to 80%; always lower it before listening.
 Disconnecting the adapter during playback stopped the client and returned
 to NextUI in the test.
 
-## Optional boot launch
+## Review package installation
+
+The review ZIP is intended for a Brick Pro running NextUI, with M8 Headless
+already installed separately on a Teensy. On the tested Brick, a fresh package
+installation, automatic boot launch, LEDs off, controls and audio were
+verified. Restoration was tested against an isolated fixture on the Brick.
+The ZIP is not a published release.
+
+Check that `Tools/tg5040/M8C Install.pak` does not already exist before
+extracting the ZIP to the SD card root. Do not overwrite an existing folder.
+Start **Tools > M8C Install** in NextUI. The installer creates `M8C.pak`, enables
+the boot hook, saves all LED brightness and info-brightness settings as zero,
+and creates the early LED hook. Reboot to apply. LED-based battery and sleep
+indications are also disabled; early firmware lights may still appear.
+
+The installer refuses existing `M8C.pak`, hook files, autostart path, or its
+own saved state; it does not upgrade or migrate existing installations.
+Back up existing files and resolve conflicts manually. It also requires an
+existing Brick Pro LED settings file or LedControl's settings template.
+For detailed recovery and reversal instructions, see
+[installer/INSTALL.txt](installer/INSTALL.txt). Restoration requires a device
+shell and preserves the installed tool and backup for manual review.
+
+Keep headphones off your ears and lower the volume before booting, connecting
+audio devices or waking the Brick; see the USB adapter precautions above.
+
+## Manual boot launch
 
 On the tested NextUI version, install the hook after installing the M8 tool:
 
@@ -158,20 +191,21 @@ installation uses SDL 3.2.20 and libserialport 0.1.1; the original Brick port's
 show its SDL build configuration. These commands have not yet been verified
 as a complete, reproducible NextUI build from this repository.
 
-Run the USB output selection tests with:
+Run the installer, package-builder and USB output selection tests with:
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
 
-## Installation status
+The review ZIP can be assembled with Python 3.9 or later and the separately
+staged, hash-verified runtime files:
 
-The working client currently exists as a NextUI Tools package on the tested
-device. This repository preserves its modified source and launcher, but does
-not yet provide a downloadable package or a complete automated installation
-procedure. The runtime package needs the ARM64 client as `m8c-bin`, the
-`sink-test` helper, `usb-output.sh`, compatible SDL3 and libserialport
-libraries under `lib/`, and an m8c configuration with `audio_enabled=false`.
+```sh
+python3 tools/build-package.py --runtime /path/to/m8-runtime --output /path/to/M8C-review.zip
+```
+
+The builder checks the runtime binaries and serial-library source archives
+against the hashes recorded in the script. It does not build the binaries.
 
 ## Credits and licenses
 
