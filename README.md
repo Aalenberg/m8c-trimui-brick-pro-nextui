@@ -8,6 +8,8 @@ Teensy 4.1 running M8 Headless with a TrimUI Brick Pro running
 This repository contains the client and NextUI launcher, **not** the M8
 Headless firmware.
 
+![M8 Headless running on a TrimUI Brick Pro](images/m8-on-brick-pro.jpg)
+
 ## Tested setup
 
 - TrimUI Brick Pro, NextUI v6.15.0, `tg5040`
