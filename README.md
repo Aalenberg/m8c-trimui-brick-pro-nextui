@@ -106,6 +106,28 @@ verified.
 To disable boot launch, rename the hook so it no longer ends in `.sh`, or
 remove that hook file.
 
+### Optional LEDs off during boot launch
+
+NextUI normally applies LED settings when its menu starts, which happens
+after the synchronous M8 boot hook. To turn off the configurable Brick Pro
+LEDs while M8 starts:
+
+1. In NextUI's **Tools > LedControl**, set both **Brightness** and **Info
+   brightness** to zero for all five zones. This also disables LED-based
+   battery and sleep indications.
+2. Copy `00-leds-off.sync.sh` from this repository to
+   `.userdata/tg5040/.hooks/boot.d/` on the SD card, and make it executable
+   on the device. Its name places it before `m8-autostart.sync.sh`.
+3. Restart to apply it before M8 launches. The early firmware boot lights may
+   still appear until NextUI runs its hooks.
+
+The hook checks `.userdata/shared/ledsettings_brickpro.txt` and only applies
+the all-off state when all five normal and info brightness values are zero.
+Its log is `.userdata/tg5040/logs/leds-off.txt`. To disable the early hook,
+rename it so it no longer ends in `.sh`, or remove it; use LedControl to
+change the saved LED settings. If you made a backup of the settings file,
+restore it while LedControl is closed and restart to apply it.
+
 ## Source and building
 
 `m8c-source/` contains the modified m8c source used for the installed client.
