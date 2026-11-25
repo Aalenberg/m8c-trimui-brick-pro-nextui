@@ -102,6 +102,15 @@ the boot hook, saves all LED brightness and info-brightness settings as zero,
 and creates the early LED hook. Reboot to apply. LED-based battery and sleep
 indications are also disabled; early firmware lights may still appear.
 
+After installation, use **Tools > M8C** (or boot with the Teensy connected).
+**M8C Install** remains in Tools but is not needed for everyday use. To remove
+that menu entry, delete only `Tools/tg5040/M8C Install.pak` from the SD card
+after installation. Keep the ZIP: to restore the hooks and LED settings later,
+extract `Tools/tg5040/M8C Install.pak` from it to the same location and follow
+the restore instructions below. Do not delete `M8C.pak` or
+`.userdata/tg5040/.m8-installer-state/`; the latter contains the saved settings
+needed for restoration.
+
 The installer refuses existing `M8C.pak`, hook files, autostart path, or its
 own saved state; it does not upgrade or migrate existing installations.
 Back up existing files and resolve conflicts manually. It also requires an

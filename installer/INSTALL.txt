@@ -10,6 +10,15 @@ The installer installs M8C.pak, enables boot autostart, and saves all five
 LED brightness and info-brightness values as zero. Reboot to apply the LEDs.
 This also disables LED-based battery and sleep indications. Early boot lights
 may still appear before the hook runs.
+
+After installation, launch Tools > M8C for everyday use. M8C Install remains
+in Tools but is no longer needed to run M8C. To remove its menu entry, delete
+only Tools/tg5040/M8C Install.pak from the SD card after installation. Keep the
+ZIP: if you later want to restore the hooks and LED settings, extract
+Tools/tg5040/M8C Install.pak from the ZIP back to the same location first.
+Do not delete Tools/tg5040/M8C.pak or .userdata/tg5040/.m8-installer-state/;
+the latter contains the saved settings needed for restoration.
+
 The installer refuses existing M8C.pak, hooks, autostart path, or installer
 state; it never upgrades or replaces an existing M8 installation. In
 particular, an existing M8 autostart or LED-off hook must be resolved manually
