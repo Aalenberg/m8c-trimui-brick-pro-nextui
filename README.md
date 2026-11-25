@@ -36,16 +36,47 @@ joystick buttons, including Brick Pro-specific Play and exit mappings.
 ## Audio
 
 The installed m8c configuration disables its own capture; the launcher uses ALSA
-`arecord` and `aplay` to route 44.1 kHz stereo USB audio from the M8 to the
-Brick's `Playback` PCM. It temporarily selects NextUI's internal audio sink
-and restores the previous USB sink on normal exit when the M8 is still
-connected. Set the volume low before connecting headphones.
+`arecord` and `aplay` to route 44.1 kHz stereo USB audio from the M8. When
+NextUI has selected USB audio and its first non-internal card is a USB playback
+device other than the M8, with a `PCM` mixer control and playback device 0,
+the launcher uses that card for output. Otherwise it uses the Brick's
+`Playback` PCM. If it switched from the USB sink to the internal sink, it
+restores the USB sink on normal exit when the M8 is still connected. Set the
+volume low before listening.
 
 If the M8 is absent or the client fails to start, inspect `log.txt` in the
 tool's directory. Forced termination or power loss can prevent normal cleanup;
-reconnect the Teensy or reboot if routing behaves unexpectedly. This launcher
-is intended for the M8 and the internal output; it does not select or manage
-an additional USB DAC.
+reconnect the Teensy or reboot if routing behaves unexpectedly.
+
+### USB headphone adapter
+
+NextUI 6.15.0's volume buttons control the first non-internal audio card, which
+may be the M8 rather than the USB headphone adapter. For the tested setup:
+
+1. Keep the headphones off your ears. Connect the adapter to a USB data port
+   on the hub; the Apple adapter may require headphones to be plugged in before
+   it appears as an audio device.
+2. Connect the Teensy after the adapter. Start M8 from Tools or boot with both
+   devices connected.
+3. Lower the volume before listening. Check the launcher `log.txt` for
+   `Using USB output:`; if it reports an unavailable USB output, the launcher
+   selected the Brick's internal output instead.
+
+USB output is selected only at launch. If the selected card ID changes or
+the audio bridge stops, the launcher stops M8 and returns to NextUI. The card
+check runs every two seconds: it does not detect every disconnect/reconnect
+or prevent NextUI from changing levels first. NextUI can change mixer levels
+or card ordering on boot, sleep and reconnect; take headphones off before
+reconnecting devices or waking the Brick, and check volume again. USB routing
+and volume controls depend on the adapter and NextUI version.
+
+On the tested setup, an Apple USB-C headphone adapter played M8 audio through
+a hub with working volume buttons when it was the first external sound card.
+The launcher used the internal output when the adapter was absent or the M8
+was the first external card. Boot launch selected the adapter in one test,
+but NextUI restored its volume to 80%; always lower it before listening.
+Disconnecting the adapter during playback stopped the client and returned
+to NextUI in the test.
 
 ## Optional boot launch
 
@@ -73,12 +104,13 @@ with Select + Y, and booting to NextUI with the Teensy disconnected were
 verified.
 
 To disable boot launch, rename the hook so it no longer ends in `.sh`, or
-remove that hook file. It does not configure USB headphone adapters.
+remove that hook file.
 
 ## Source and building
 
 `m8c-source/` contains the modified m8c source used for the installed client.
-`launch.sh` and `sink-test.c` are the NextUI launcher and audio-sink helper.
+`launch.sh`, `usb-output.sh`, and `sink-test.c` are the NextUI launcher and
+audio-sink helpers.
 The source snapshot retains upstream documentation; its generic audio guide
 does not describe this launcher's ALSA bridge.
 
@@ -102,14 +134,20 @@ installation uses SDL 3.2.20 and libserialport 0.1.1; the original Brick port's
 show its SDL build configuration. These commands have not yet been verified
 as a complete, reproducible NextUI build from this repository.
 
+Run the USB output selection tests with:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
 ## Installation status
 
 The working client currently exists as a NextUI Tools package on the tested
 device. This repository preserves its modified source and launcher, but does
 not yet provide a downloadable package or a complete automated installation
 procedure. The runtime package needs the ARM64 client as `m8c-bin`, the
-`sink-test` helper, compatible SDL3 and libserialport libraries under `lib/`,
-and an m8c configuration with `audio_enabled=false`.
+`sink-test` helper, `usb-output.sh`, compatible SDL3 and libserialport
+libraries under `lib/`, and an m8c configuration with `audio_enabled=false`.
 
 ## Credits and licenses
 
